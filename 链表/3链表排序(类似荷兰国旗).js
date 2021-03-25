@@ -1,7 +1,17 @@
 /*
- * @Author: your name
+ * @Author: hrm
+ * @Date: 2021-03-25 11:00:45
+ * @LastEditTime: 2021-03-25 11:05:42
+ * @LastEditors: Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: \base\链表\3链表排序.js
+ */
+
+
+/*
+ * @Author: hrm
  * @Date: 2021-03-23 21:07:34
- * @LastEditTime: 2021-03-24 19:53:32
+ * @LastEditTime: 2021-03-25 10:52:25
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \base\链表\简单介绍.js
@@ -39,7 +49,8 @@
 // 遍历链表，最后小于区的尾指针连等于区的头指针，等于区的尾指针连大于区的头指针
 // 注意：很多边界条件需要考虑到
 
-// 实现
+
+
 class Node {
     constructor(value) {
         this.next = null;
@@ -49,83 +60,7 @@ class Node {
 }
 
 class LinkedList {
-    // 
-    // 给定链表的头节点，每个结点有两个指针，一个next指针，一个是随机指针，深度拷贝该链表的结构
-    // 实现1，
-    // 额外空间map
-    //    |--|
-    //    v  | 
-    // 1->2->3->4->null
-    //    |     ^
-    //    |-----|
-    // 思路：例：map.set(1, 1');
-    // map的键为原结点，值为拷贝结点
-    // 具体实现见下
-    copyLinkedListWithMap(head) {
-        if (head == null) {
-            return;
-        }
-        let map = new Map()
-        let originHead = head;
-        while (head !== null) {
-            map.set(head, new Node(head.value));
-            head = head.next;
-        }
-        head = originHead;
-        while (head !== null) {
-            // map.get(head)===>head'
-            map.get(head).next = map.get(head.next);
-            map.get(head).rand = map.get(head.rand);
-            head = head.next;
-        }
-        return map.get(originHead);
-    }
-    // 不带额外空间
-    // 实现思路
-    // 将拷贝的结点（新生成的结点）放在原结点的next之后
-    // 1->2->3->4->null
-    // 1->->1'->2->->2'->3->3'->4->4'->null
-    // 每次指针移动两次，
-    // 最后将原链表复原
-    copyLinkedListWithNoMap(head) {
-        if (head == null) {
-            return null;
-        }
-        // 保存头结点信息
-        let originHead = head;
-        // 生成新链表
-        while (head !== null) {
-            let originalHeadNext = head.next;
-            let node = new Node(head.value.toString() + '假');
-            head.next = node;
-            node.next = originalHeadNext;
-            head = originalHeadNext;
-        }
-        // 在原链表中给新结点添加rand属性
-        let left = originHead;
-        let right = originHead.next;
-        while (left !== null) {
-            // 解决left.rand不存在,left.rand.next报错问题
-            right.rand = left.rand == null ? null : left.rand.next;
-            left = left.next.next;
-            // 解决右指针越界问题
-            // 例如4'->null;
-            // 在没有到链表的尾部时,左右指针均移动两次,到了尾部,右指针仅能移动一部,否则null.next会报错
-            right = right.next !== null ? right.next.next : null;
-        }
-        // 恢复原链表，得到新链表 
-        left = originHead;
-        right = originHead.next;
-        let res = right;
-        // 具体思路画图演示
-        while (left !== null) {
-            left.next = right.next;
-            right.next = left.next == null ? null : left.next.next;
-            left = left.next
-            right = right.next
-        }
-        return res;
-    }
+
     // 笔试实现,空间复杂度较高,但是时间复杂度并没有上升
     listSortP(head) {
         let arr = [];
@@ -206,32 +141,3 @@ class LinkedList {
 }
 
 let linkedList = new LinkedList();
-
-// // 临时链表
-// let head = new Node(10);
-// let a = new Node(6);
-// let b = new Node(-1);
-// head.next = a;
-// a.next = b
-// b.next = new Node(4)
-// // 测试1用
-// let res = linkedList.listSortM(head, 4);
-// console.log(res);
-
-// 建立含有rand的链表
-let head = new Node(1)
-let a = new Node(2)
-let b = new Node(3)
-let c = new Node(4)
-head.next = a;
-a.next = b;
-b.next = c;
-b.rand = a;
-c.rand = a;
-// linkedList.copyLinkedListWithMap()测试
-// console.log(
-//     linkedList.copyLinkedListWithMap(head)
-// );
-console.log(
-    linkedList.copyLinkedListWithNoMap(head).next.next.rand
-);
