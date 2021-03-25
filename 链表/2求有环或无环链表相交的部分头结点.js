@@ -1,7 +1,7 @@
 /*
  * @Author: hrm
  * @Date: 2021-03-23 21:07:34
- * @LastEditTime: 2021-03-25 11:09:33
+ * @LastEditTime: 2021-03-25 21:07:11
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \base\链表\简单介绍.js
@@ -31,13 +31,6 @@
 // 返回之前需要将数据结构恢复
 
 
-// 2.将链表划分为小于T的在左边，等于T的在中间，大于T的在右边（类似荷兰国旗问题）
-// 思路：笔试：将链表的元素放入数组，对数组排序，重新放入链表
-// 面试：准备六个指针
-// 小于4两个（首尾指针）
-// 等于四
-// 遍历链表，最后小于区的尾指针连等于区的头指针，等于区的尾指针连大于区的头指针
-// 注意：很多边界条件需要考虑到
 
 
 // 题3
@@ -54,7 +47,10 @@
 // 若结点无环，则尾接结点一定指向null
 // 若有环，则会进入循环
 // 题3可分解为多个小题
-// ①判断连边是否有环
+// 1.判断链表是否有环，如果有，返回入环结点
+// 2.两个无环单链表如何找到相交的结点
+// 3.两个有环单链表如何找到相交结点
+// 注意：一个链表有环，一个无环无法相交
 // 实现
 class Node {
     constructor(value) {
@@ -65,13 +61,14 @@ class Node {
 }
 
 class LinkedList {
+    // 使用hashTable实现
     // 思路：若一个链表无环，则一定能够遍历出去，尾结点一定指向null
-    // 若有环，则会进入死循环
-    // 若有环路，返回第一个环路的第一个结点
+    // 若有环，则会进入死循环,在此之前set已经把链表的所有结点遍历并存取了
+    // 若碰到入环结点，此时set结构已经存在，返回信息即可
     // 否则返回null
     isAcyclicListWithSet(head) {
-        if (head == null) {
-            return true;
+        if (head == null || head.next == null || head.next.next == null) {
+            return null;
         }
         let set = new Set();
         while (head !== null) {
@@ -84,19 +81,24 @@ class LinkedList {
         }
         return null
     }
+    // 利用两个指针，快指针和满指针，
+    // 快指针走得快
+    // 如果没有环，快指针会走到null
+    // 如果有环，快慢指针一定会相遇
+    // 若两指针相遇，快指针慢下来，回到头部，一次走一步
+    // 快慢指针再次相遇的即位环的第一个结点
+    // 注意：while(1)循环体应该先判断再移动指针，
+    // 否则会出现以下问题
+    // 如果链表的头部next指针指向了头部，若先移动指针，返回的结果为入环结点的下一个结点
     isAcyclicListWithNoSet(head) {
-        // 利用两个指针，快指针和满指针，
-        // 快指针走得快
-        // 如果没有环，快指针会走到null
-        // 如果有环，快慢指针一定会相遇
-        // 若两指针相遇，快指针慢下来，回到头部，一次走一步
-        // 快慢指针再次相遇的即位环的第一个结点
-        // 保存头节点信息
+        if (head == null || head.next == null || head.next.next == null) {
+            return null;
+        }
         let originHead = head;
         let fast = head;
         let slow = head;
         while (fast !== null) {
-            fast = fast.next.next;
+            fast = fast.next == null ? null : fast.next.next;
             slow = slow.next;
             // 快慢指针相遇，慢指针位置不变，快指针移动到链表头部，速度减慢
             // 若不相遇(无环)，则必会退出while循环
@@ -105,88 +107,142 @@ class LinkedList {
                 break;
             }
         }
+        // 无环
+        if (fast == null) {
+            return null;
+        }
         // 有环的情况
+        // 注意：while(1)循环体应该先判断再移动指针，
+        // 否则会出现以下问题
+        // 如果链表的头部next指针指向了头部，若先移动指针，返回的结果为入环结点的下一个结点
         while (1) {
+            if (fast === slow) {
+                return fast;
+            }
             fast = fast.next;
             slow = slow.next;
-            if (fast === slow) {
-                return fast
-            }
         }
-        // 无环的情况
-        return null;
     }
+    // 拿到尾部的结点（无环链表）
+    // 时间复杂度O(N)
     getFirstPublicNodeWithHashTable(head, head2) {
         // 若两个链表无环，且这两个链表相交，则相交的图像类似于Y
         // 注意：不可能画出类似于X的图像
         // 思考
-        // 哈希表实现,且均没有环
-        // 思路：首先遍历第一个链表，将所有的节点信息放入set，再次遍历链表2，
-        // 每过一个结点查一次表，如果没有，继续，如果有，则必为相交的第一个结点
-        let node = this.isAcyclicListWithSet(head)
-        let node2 = this.isAcyclicListWithSet(head2)
-        if (node == null && node2 == null) {
-            let set = new Set();
-            while (head != null) {
-                set.add(head);
-                head = head.next;
+        // 哈希表实现
+        // 思路：首先遍历第一个链表，将所有的节点信息放入set，
+        // 再次遍历链表2，每过一个结点查一次表，如果没有，继续，如果有，则必为相交的第一个结点
+        let set = new Set();
+        while (head != null) {
+            set.add(head);
+            head = head.next;
+        }
+        // 得到相交的第一个结点
+        while (head2 !== null) {
+            if (set.has(head2)) {
+                return head2
             }
-            // 得到相交的第一个结点
-            while (head2 !== null) {
-                if (set.has(head2)) {
-                    return head2
+            head2 = head2.next;
+        }
+        return null;
+    }
+    // 不使用哈希表,得到两个无环链表的入环结点
+    // 思路:若两个链表相交,则相交的最后一个结点地址一定相同
+    // 否则不相交
+    // 若最后一个结点的地址一样(即链表相交)，
+    // 则较长的链表先走长的那一部分，之后短链表个常链表一起走，直至相加
+    getFirstPublicNodeWithNoHashTable(head, head2) {
+        let len1 = this.getListLength(head);
+        let len2 = this.getListLength(head2);
+        if (len1[1] === len2[1]) {
+            let maxLen = Math.max(len1[0], len2[0]);
+            let restStep = maxLen - Math.min(len1[0], len2[0])
+            let inHead = maxLen == len1[0] ? head : head2;
+            while (restStep > 0) {
+                inHead = inHead.next;
+                restStep--;
+            }
+            while (1) {
+                if (inHead == head2) {
+                    return inHead;
                 }
+                inHead = inHead.next;;
                 head2 = head2.next;
             }
-            return null;
         }
-    }
-    getFirstPublicNodeWithNoHashTable(head, head2) {
-        // 如果两个没有环的链表相交，则其相交的最后一个结点的内存地址一定一样
-        // 若不一样，则一定不相交
-        // 若最后一个结点的地址一样，则较长的链表先走长的那一部分，之后短链表个常链表一起走，直至相加
-        let node = this.isAcyclicListWithSet(head)
-        let node2 = this.isAcyclicListWithSet(head2)
-        if (node == null && node2 == null) {
-            // false表示无环
-            let listLen = this.getListLength(head, false);
-            let listLen2 = this.getListLength(head2, false);
-            if (listLen[1] === 0 && listLen2[1]) {
-
-            }
-        }
+        return null;
 
     }
     // 若无环，得到长度并返回最后一个结点
-    // 若有环，仅返回长度
-    getListLength(head, boolean) {
+    getListLength(head) {
         if (head == null) {
             return 0;
         }
         let len = 0;
-        // 有环链表
-        if (boolean == true) {
-            let set = new Set();
-            while (head !== null) {
-                set.add(head);
-                len += 1;
-                head = head.next;
-                if (set.has(head)) {
-                    return len;
-                }
-            }
-        } else {
-            // 无环链表
-            let node = null;
-            while (head !== null) {
-                len += 1;
-                node = head
-                head = head.next;
-            }
-            return [len, node];
+        // 无环链表
+        let node = null;
+        while (head !== null) {
+            len += 1;
+            node = head
+            head = head.next;
         }
-
+        return [len, node];
     }
+    // 一.若两个链表无环，且这两个链表相交，则相交的图像一定类似于Y
+    // 二.若两个链表均有环，分为三种情况
+    // ①两个有环链表，不相交
+    // ②两个有环链表
+    // 有共享环，但是第一个相交的结点位于环外（两个链表的入环节点是同一个）
+    //  1->1->1  1<-1<-1
+    //         |
+    //         v
+    //         1
+    //         | 
+    //         v
+    //         1->1->1 
+    //         |     |
+    //         |     v
+    //          <-1<-1
+    // ③有共享环，相交结点位于环内，且链表1与链表2的如换节点不一样
+    // 1->1->1   1<-1<-1
+    //       |   |
+    //       |   v
+    //       |   1
+    //       |   | 
+    //       |   v
+    //       |->1->1->1 
+    //          ^     |
+    //          |     v
+    //          1<-1<-1
+    // 三.一个有环，一个无环
+    // 不可能相交
+
+
 }
 
 let linkedList = new LinkedList();
+let a = new Node('a');
+let b = new Node('b');
+let c = new Node('c');
+let d = new Node('d');
+let e = new Node('e');
+let f = new Node('f');
+a.next = b;
+b.next = c;
+c.next = d;
+d.next = e;
+e.next = f;
+
+let g = new Node('g');
+g.next = new Node('h');
+g.next.next = c
+// g.next = c;
+// console.log(
+//     linkedList.isAcyclicListWithSet(a),
+//     linkedList.isAcyclicListWithSet(g)
+
+// );
+console.log(
+
+    linkedList.getFirstPublicNodeWithNoHashTable(a, g)
+);
