@@ -1,7 +1,7 @@
 /*
  * @Author: hrm
  * @Date: 2021-03-23 21:07:34
- * @LastEditTime: 2021-03-25 21:07:11
+ * @LastEditTime: 2021-03-26 11:06:01
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \base\链表\简单介绍.js
@@ -64,7 +64,7 @@ class LinkedList {
     // 使用hashTable实现
     // 思路：若一个链表无环，则一定能够遍历出去，尾结点一定指向null
     // 若有环，则会进入死循环,在此之前set已经把链表的所有结点遍历并存取了
-    // 若碰到入环结点，此时set结构已经存在，返回信息即可
+    // 若碰到入环结点，此时set结构已经存在，返回第一个重复的结点信息即可（hashmap也可）
     // 否则返回null
     isAcyclicListWithSet(head) {
         if (head == null || head.next == null || head.next.next == null) {
@@ -123,8 +123,8 @@ class LinkedList {
             slow = slow.next;
         }
     }
-    // 拿到尾部的结点（无环链表）
     // 时间复杂度O(N)
+    // =========================================================================================================
     getFirstPublicNodeWithHashTable(head, head2) {
         // 若两个链表无环，且这两个链表相交，则相交的图像类似于Y
         // 注意：不可能画出类似于X的图像
@@ -146,11 +146,12 @@ class LinkedList {
         }
         return null;
     }
+    // =======================================================================================================
     // 不使用哈希表,得到两个无环链表的入环结点
     // 思路:若两个链表相交,则相交的最后一个结点地址一定相同
     // 否则不相交
     // 若最后一个结点的地址一样(即链表相交)，
-    // 则较长的链表先走长的那一部分，之后短链表个常链表一起走，直至相加
+    // 则较长的链表先走长的那一部分，之后短链和长链表一起走，直至相加
     getFirstPublicNodeWithNoHashTable(head, head2) {
         let len1 = this.getListLength(head);
         let len2 = this.getListLength(head2);
@@ -174,6 +175,7 @@ class LinkedList {
 
     }
     // 若无环，得到长度并返回最后一个结点
+    //  ===================================================
     getListLength(head) {
         if (head == null) {
             return 0;
@@ -200,16 +202,16 @@ class LinkedList {
     //         | 
     //         v
     //         1->1->1 
-    //         |     |
+    //         ^     |
     //         |     v
-    //          <-1<-1
-    // ③有共享环，相交结点位于环内，且链表1与链表2的如换节点不一样
-    // 1->1->1   1<-1<-1
-    //       |   |
-    //       |   v
-    //       |   1
-    //       |   | 
-    //       |   v
+    //         1<-1<-1
+    // ③有共享环，相交结点位于环内，且链表1与链表2的入换节点不一样
+    // 1->1->1   1->1->1
+    //       |         |
+    //       |         v
+    //       |         1
+    //       |         | 
+    //       |         v
     //       |->1->1->1 
     //          ^     |
     //          |     v
@@ -217,32 +219,84 @@ class LinkedList {
     // 三.一个有环，一个无环
     // 不可能相交
 
+    // 有环链表
+    // 一个有环，一个无环
+    getFirstPublicNode(headFN, head2FN) {
+        // 一个有环,一个无环
+        if ((head2FN == null && headFN !== null) || (head2FN !== null && headFN == null)) {
+            return null;
+        }
+        // 情况2
+        // 思路:如果两个结点的入环结点一样,则将该结点作为尾结点,向上寻找最初的公共部分
+        // 此时情况2退化为,两个无环的链表相交的情况
 
+        if ((head2FN == headFN) && (head2FN !== null)) {
+            // 同名函数,参数不同
+            return this.getFirstPublicNodeWithHashTable1(head, head2, head2FN);
+        }
+        // 情况3
+        // 
+        // 两个链表的入环结点不一样
+        else {
+            let set = new Set();
+            set.add(head2FN)
+            let originPublicNode = head2FN;
+            head2FN = head2FN.next;
+            while (head2FN !== originPublicNode) {
+                set.add(head2FN);
+                head2FN = head2FN.next;
+            }
+            if (set.has(headFN)) {
+                return originPublicNode;
+            } else {
+                return null;
+            }
+        }
+    }
+    // hashTable实现
+    getFirstPublicNodeWithHashTable1(head, head2, tailNode) {
+        let set = new Set();
+        while (head !== tailNode.next) {
+            set.add(head);
+            head = head.next;
+        }
+        while (head2 !== tailNode.next) {
+            if (set.has(head2)) {
+                return head2
+            }
+            head2 = head2.next;
+        }
+    }
+    // 最终版
+    getEntryNode(head, head2) {
+        let headFN = this.isAcyclicListWithSet(head);
+        let head2FN = this.isAcyclicListWithSet(head2);
+        if ((headFN == null) && (head2FN == null)) {
+            return this.getFirstPublicNodeWithHashTable(head, head2);
+        } else {
+            return this.getFirstPublicNode(headFN, head2FN);
+        }
+    }
 }
 
 let linkedList = new LinkedList();
+
 let a = new Node('a');
 let b = new Node('b');
 let c = new Node('c');
+
 let d = new Node('d');
 let e = new Node('e');
 let f = new Node('f');
+
 a.next = b;
 b.next = c;
-c.next = d;
+c.next = a;
+
 d.next = e;
 e.next = f;
+f.next = d
 
-let g = new Node('g');
-g.next = new Node('h');
-g.next.next = c
-// g.next = c;
-// console.log(
-//     linkedList.isAcyclicListWithSet(a),
-//     linkedList.isAcyclicListWithSet(g)
-
-// );
 console.log(
-
-    linkedList.getFirstPublicNodeWithNoHashTable(a, g)
-);
+    linkedList.getEntryNode(a, d)
+)
