@@ -74,7 +74,7 @@ function conversion(arr) {
     return graph;
 }
 
-console.log(conversion(arr));
+// console.log(conversion(arr));
 // 邻接矩阵
 // 为方便，结点从0开始
 // 有一个邻接矩阵如下
@@ -91,14 +91,15 @@ console.log(conversion(arr));
 // 第一行：第0个结点到第3个结点的距离为6
 // 以此类推
 let matrix = [
-    [0, 4, 8, 6],
-    [0, 0, 7, 1],
-    [0, 0, 0, 0],
-    [0, 0, 0, 0]
+    [0, 1, 1, 1],
+    [0, 0, 1, 1],
+    [1, 0, 0, 1],
+    [0, 0, 1, 0]
 ]
 
 // 注：邻接矩阵，有几行，注册几个结点
 // 有几个元素值不为0，创建几条边
+
 function adjacencyMatrixToGraph(matrix) {
     let graph = new Graph();
     for (let i = 0; i < matrix.length; i++) {
@@ -115,7 +116,6 @@ function adjacencyMatrixToGraph(matrix) {
                 let startNode = graph.nodes.get(i);
                 startNode.out++;
                 endNode.in++;
-                console.log(graph.edges)
                 let edge = new Edge(weight, startNode, endNode);
                 startNode.nexts.push(endNode);
                 startNode.edges.push(edge);
@@ -127,11 +127,8 @@ function adjacencyMatrixToGraph(matrix) {
 
 }
 
-console.log(
-    // adjacencyMatrixToGraph(matrix)
-);
-// 邻接表转换为图
 
+// 邻接表转换为图
 // ①1->2->3->null
 // ②2->4->5->null
 // ③3->4->null
@@ -166,6 +163,7 @@ let four = new SNode(4);
 
 let data = [one, two, three, four];
 
+
 function adjacencyTableToGraph(data) {
     let graph = new Graph();
     for (let i = 0; i < data.length; i++) {
@@ -195,5 +193,11 @@ function adjacencyTableToGraph(data) {
 }
 
 console.log(
-    adjacencyTableToGraph(data)
+    // adjacencyMatrixToGraph(matrix)
 );
+
+console.log(
+    // adjacencyMatrixToGraph(matrix).nodes.get(3)
+);
+
+module.exports = adjacencyMatrixToGraph
