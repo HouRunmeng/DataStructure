@@ -1,12 +1,13 @@
 /*
  * @Author: your name
  * @Date: 2021-03-27 13:01:58
- * @LastEditTime: 2021-03-27 17:09:01
+ * @LastEditTime: 2021-03-31 10:33:44
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \base\二叉树\3二叉树递归.js
  */
-
+// 二叉树的递归
+// 树型DP的题均可用二叉树递归解决
 class Node {
     constructor(value) {
         this.value = value;
@@ -140,6 +141,100 @@ class BT {
     // 题4
     // 给定一个树上的两个结点
     // 返回这两个结点的最近公共祖先
+    // Info结构见下文
+    static getLatestAncestor(head, node1, node2) {
+        if (head === null) {
+            return new Info(false, false, null);
+        }
+        if (node1 === node2) {
+            return new Info(true, true, node1);
+        }
+        let leftData = this.getLatestAncestor(head.left, node1, node2);
+        let rightData = this.getLatestAncestor(head.right, node1, node2);
+        // 左树发现了最低公共祖先
+        if (leftData.latestAncestor !== null) {
+            return new Info(true, true, leftData.latestAncestor);
+        }
+        // 右树发现了公共祖先
+        if (rightData.latestAncestor !== null) {
+            return new Info(true, true, rightData.latestAncestor);
+        }
+        // 左右树均无发现最低公共祖先,但是左右子树发现了两个结点
+        // 找到了两个结点，说明当前节点即为两个结点的最近公共祖先
+        if (leftData.isFind1 && rightData.isFind2) {
+            return new Info(true, true, head)
+        }
+        if (leftData.isFind2 && rightData.isFind1) {
+            return new Info(true, true, head);
+        }
+        // 左右两树都没有发现最低公共祖先，而且最低公共祖先不在当前结点交汇
+        // 以下代码解决的情况：
+        // 左右两树只包含find1,或者左右两树只包含find2,或者两个结点均没有找到
+        // 注意：左右子树只发现了一个结点，如果当前结点为未被发现的第二个结点，当前节点也是最低公共祖先 
+        let isFind1 = head == node1
+        let isFind2 = head == node2;
+        if (leftData.isFind1 || rightData.isFind1) {
+            if (isFind2) {
+                return new Info(true, true, head)
+            } else {
+                return new Info(true, false, null)
+            }
+        }
+
+        if (leftData.isFind2 || rightData.isFind2) {
+            if (isFind1) {
+                return new Info(true, true, head)
+            } else {
+                return new Info(false, true, null)
+            }
+        }
+        // 以上情况均不满足
+        return new Info(isFind1, isFind2, null)
+    }
+    // 题5
+    // 如何判断某个数是否为完全二叉树
+    // 宽度优先遍历
+    // 需要满足的条件
+    // 遍历的任何节点不能只有右孩子没有左孩子
+    // 一旦遇到还子不双全的结点，接下来的结点必须是叶结点
+    static isCompleteBT(head) {
+        if (head === null) {
+            return true;
+        }
+        let queue = [];
+        let isMeet = false;
+        let left = null;
+        let right = null;
+        queue.push(head);
+        while (queue.length !== 0) {
+            let cur = queue.shift();
+            left = cur.left;
+            right = cur.right;
+            // 左孩子为空但是右孩子不为空
+            // 或者已经遇见过结点不全的结点，那么之后的结点必须是叶子结点，均不能有左右孩子
+            if ((left === null && right !== null) || (isMeet && (left !== null || right !== null))) {
+                return false;
+            }
+            if (left !== null) {
+                queue.push(cur.left)
+            }
+            if (right !== null) {
+                queue.push(cur.right)
+            }
+            if (left == null || right == null) {
+                // 遇到了左右孩子不全的结点
+                isMeet = true
+            }
+        }
+    }
+}
+
+class Info {
+    constructor(isFind1, isFind2, latestAncestor) {
+        this.isFind1 = isFind1;
+        this.isFind2 = isFind2;
+        this.latestAncestor = latestAncestor;
+    }
 }
 
 
@@ -153,3 +248,19 @@ class BT {
 // 4)把左树信息和右树信息求全集,就是任何一棵子树都需要返回的信息S
 // 5)递归函数都返回S,每一棵子树都这么要求
 // 6)写代码,在代码中考虑如何把左树的信息和右树信息整合出整棵树的信息
+
+
+let a = new Node('a');
+let b = new Node('b');
+let c = new Node('c');
+let d = new Node('d');
+let e = new Node('e');
+let f = new Node('f');
+a.left = b;
+a.right = c;
+c.left = d;
+c.right = f;
+let g = new Node('g');
+d.right = e;
+
+console.log(BT.getLatestAncestor(a, a, g));
