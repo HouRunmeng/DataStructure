@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-03-26 21:21:25
- * @LastEditTime: 2021-03-27 14:41:31
+ * @LastEditTime: 2021-04-03 20:08:24
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \base\二叉树\二叉树宽度相关.js
@@ -102,6 +102,36 @@ let a = new Node(10)
 a.left = new Node(9);
 a.right = new Node(10);
 a.left.left = new Node(9);
-console.log(
-    BT.getHeightRecursion(a)
-);
+// console.log(
+//     BT.getHeightRecursion(a)
+// );
+
+// 层序遍历二叉树，每一行结点归为一个数组
+
+var levelOrder = function (root) {
+    let node = root;
+    let map = new Map();
+    // 头节点的高度为0，方便给数组的下标直接赋值
+    map.set(node, 0);
+    let queue = [];
+    let res = [];
+    queue.push(node);
+    while (queue.length !== 0) {
+        let cur = queue.shift();
+        if (cur.left !== null) {
+            queue.push(cur.left);
+            map.set(cur.left, map.get(cur) + 1);
+        }
+        if (cur.right !== null) {
+            queue.push(cur.right);
+            map.set(cur.right, map.get(cur) + 1);
+        }
+    }
+    for (let item of map) {
+        if (res[item[1]] == undefined) {
+            res[item[1]] = [];
+        }
+        res[item[1]].push(item[0].value)
+    }
+    return res;
+};

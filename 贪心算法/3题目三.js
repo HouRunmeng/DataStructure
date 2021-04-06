@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-03-31 18:34:36
- * @LastEditTime: 2021-03-31 19:37:16
+ * @LastEditTime: 2021-03-31 19:46:46
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \base\贪心算法\3题目三.js
@@ -65,5 +65,3 @@ function getMaxValue(programmers, count, startFund) {
 }
 
 console.log(getMaxValue(programmers, 3, 2));
-
-// 获取数据流的中位数

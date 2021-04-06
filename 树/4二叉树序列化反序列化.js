@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-03-31 10:34:21
- * @LastEditTime: 2021-03-31 12:25:08
+ * @LastEditTime: 2021-04-03 16:58:48
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \base\树\4二叉树序列化反序列化.js
@@ -55,12 +55,12 @@ let d = new Node('d');
 a.left = b;
 a.right = c;
 c.left = d;
-// let arr = [];
-// serialize(a, arr);
-// console.log(arr);
-// console.log(
-//     deserialization(arr)
-// );
+let arr = [];
+serialize(a, arr);
+console.log(arr);
+console.log(
+    deserialization(arr)
+);
 
 
 // // 字符串实现
@@ -94,11 +94,11 @@ function deserializationByString(arr) {
 }
 
 
-console.log(
-    getRes(
-        serializeByString(a)
-    )
-);
+// console.log(
+//     getRes(
+//         serializeByString(a)
+//     )
+// );
 
 
 

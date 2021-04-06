@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-03-30 11:22:12
- * @LastEditTime: 2021-03-30 22:15:37
+ * @LastEditTime: 2021-04-02 20:29:35
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \base\树\1前缀树.js
@@ -156,6 +156,10 @@ a.insert('abed')
 console.log(a.search('abc'));
 a.deleteCplus('abc');
 console.log(a.search('abc'));
+
+let a = [];
+a.length = 16;
+console.log(a);
 
 
 

@@ -18,10 +18,12 @@ function mergeSort(arr, L, R) {
         return;
     }
     let M = L + ((R - L) >> 1);
+    // let M = (L + R) / 2;
     mergeSort(arr, L, M);
     mergeSort(arr, M + 1, R);
     merge(arr, L, M, R);
 }
+//[9, 10, 7, 8, 3, 2, 9, 1]
 
 // L为最左边
 // M为中间
@@ -46,9 +48,9 @@ function merge(arr, L, M, R) {
         arr[L + i] = tempArr[i];
     }
 }
-// let arr = [9, 10, 7, 8, 3, 2, 9, 1];
-// mergeSort(arr, 0, arr.length - 1);
-// console.log(arr);
+let arr = [9, 10, 7, 8, 3, 2, 9, 1];
+mergeSort(arr, 0, arr.length - 1);
+console.log(arr);
 
 // 归并排序扩展
 // 小和问题和逆序对问题
@@ -96,7 +98,7 @@ function merge1(arr, L, M, R) {
     }
     return sum;
 }
-// console.log(smallSum([1, 3, 4, 2, 5], 0, 4));
+console.log(smallSum([4, 5, 6, 7], 0, 3));
 
 // 逆序对问题，在一个数组中，左边的数如果比右边的数大，则这两个数构成一个逆序对，返回逆序对的数量
 function castleWalls(arr, L, R) {
