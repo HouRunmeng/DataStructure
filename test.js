@@ -66,31 +66,45 @@
 // console.log(merge(b, a));
 
 
-var search = function (nums, target) {
+// var search = function (nums, target) {
+//     let L = 0;
+//     let R = nums.length - 1;
+//     let M = L + ((R - L) >> 1);
+//     while (L < R) {
+//         if (nums[M] >= target) {
+//             R = M - 1;
+//             M = ((R + L) >> 1);
+//         } else if (nums[M] < target) {
+//             L = M + 1;
+//             M = ((M + R) >> 1);
+//         }
+//     };
+//     console.log(M);
+//     let res = 0;
+//     while (nums[M] < target || M == -1) {
+//         M++
+//     }
+//     while (nums[M] == target) {
+//         M++;
+//         res += 1;
+//     }
+//     return res;
+
+// }
+// console.log(
+//     search([2, 2], 2)
+// )
+
+
+var missingNumber = function (nums) {
     let L = 0;
     let R = nums.length - 1;
     let M = L + ((R - L) >> 1);
-    while (L < R) {
-        if (nums[M] >= target) {
-            R = M - 1;
-            M = ((R + L) >> 1);
-        } else if (nums[M] < target) {
-            L = M + 1;
-            M = ((M + R) >> 1);
-        }
-    };
-    console.log(M);
-    let res = 0;
-    while (nums[M] < target || M == -1) {
-        M++
+    while (nums[M] == M) {
+        L = M + 1;
+        M = L + ((R - L) >> 1);
     }
-    while (nums[M] == target) {
-        M++;
-        res += 1;
-    }
-    return res;
+    return M;
+};
 
-}
-console.log(
-    search([2, 2], 2)
-)
+console.log(missingNumber([0, 1, 2, 3, 5, 6]))
