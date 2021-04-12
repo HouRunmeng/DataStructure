@@ -21,7 +21,7 @@
 // 如果cur结点左子树的最右结点为空，那么cur一定是第一次到达这个结点，
 // 如果cur结点左子树的最右结点为本身，那么cur一定是第二次到达这个结点，
 // 如果是第二次来到这个节点，那么需要恢复最右指针为空，向右移动（此时左子树已经遍历完毕）
-// 记：将cur移到的点的顺序，记为morris顺序
+// 记：将cur移到的点的顺序，记为morris顺序下
 
 
 class Node {
@@ -61,40 +61,24 @@ function Morris(root) {
     let cur = root;
     // 以下所有声明的数组，本不应声明，应该直接打印值，否则会提高空间复杂度
     // 此处为了方便，将先序，中序的遍历结果存储下来，方便观察
-    // 总的遍历结果
-    let allRes = [];
-    // 存储先序遍历结果
-    let PreorderRes = [];
-    // 存储中序遍历结果
-    let MiddleorderRes = [];
     while (cur !== null) {
-        allRes.push(cur.value)
         if (cur.left === null) {
             // 第一次访问节点,且该节点只能访问一次;
-            PreorderRes.push(cur.value);
-            MiddleorderRes.push(cur.value);
+            console.log(cur.value);
             cur = cur.right;
         } else if (cur.left !== null) {
             let mostRight = getMostRight(cur);
             if (mostRight.right == null) {
                 // 第一次访问节点，该结点能够访问两次
-                PreorderRes.push(cur.value)
+                console.log(cur.value);
                 mostRight.right = cur;
                 cur = cur.left;
             } else if (mostRight.right == cur) {
-                let mostRight = getMostRight(cur);
-                // 第二次访问结点
-                MiddleorderRes.push(cur.value)
                 mostRight.right = null;
                 cur = cur.right;
             }
         }
     }
-    return {
-        '中序遍历': MiddleorderRes,
-        '先序遍历': PreorderRes,
-        'Morris遍历': allRes
-    };
 }
 
 let node = new Node(1);
