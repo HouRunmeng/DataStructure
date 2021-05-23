@@ -96,48 +96,77 @@
 // )
 
 
-function isLoop(node) {
-    if (node == null) {
-        return false
-    }
-    let set = new Set();
-    while (node !== null) {
-        if (!set.has(node)) {
-            set.add(node);
-        } else {
-            return true
-        }
-        node = node.next;
-    }
+// function isLoop(node) {
+//     if (node == null) {
+//         return false
+//     }
+//     let set = new Set();
+//     while (node !== null) {
+//         if (!set.has(node)) {
+//             set.add(node);
+//         } else {
+//             return true
+//         }
+//         node = node.next;
+//     }
+// }
+
+// var getLen = function (node) {
+//     if (isLoop(node)) {
+//         console.log('sorry,this is a loop in it');
+//         return false;
+//     }
+//     if (node == null) {
+//         return 0;
+//     }
+//     let res = 0;
+//     while (node !== null) {
+//         res++;
+//         node = node.next
+//     }
+//     return res;
+// }
+// class Node {
+//     constructor(value) {
+//         this.value = value
+//         this.next = null;
+//     }
+// }
+
+// let a = new Node(1)
+// let b = new Node(2)
+// let c = new Node(3);
+// a.next = b;
+// b.next = c;
+// c.next = b;
+// var isPalindrome = function (x) {
+//     if (x < 0) {
+//         return false
+//     }
+//     x = x.toString();
+//     let left = 0;
+//     let right = x.length - 1;
+//     while (left <= right) {
+//         if (x[left] == x[right]) {
+//             left++;
+//             right--;
+//         } else {
+//             return false
+//         }
+//     }
+//     return true
+// };
+
+// console.log(isPalindrome(11));
+
+function* test() {
+    yield 'a';
+    yield 'b';
+    yield 'c';
+    return 'd'
 }
 
-var getLen = function (node) {
-    if (isLoop(node)) {
-        console.log('sorry,this is a loop in it');
-        return false;
-    }
-    if (node == null) {
-        return 0;
-    }
-    let res = 0;
-    while (node !== null) {
-        res++;
-        node = node.next
-    }
-    return res;
+let a = test().next();
+while (a) {
+    console.log(a.value);
 }
-class Node {
-    constructor(value) {
-        this.value = value
-        this.next = null;
-    }
-}
-
-let a = new Node(1)
-let b = new Node(2)
-let c = new Node(3);
-a.next = b;
-b.next = c;
-c.next = b;
-console.log(isLoop(a));
-console.log(getLen(a));

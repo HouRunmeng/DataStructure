@@ -6,6 +6,7 @@
 // w[index]=>当前货物的重量
 // alreadyW=>当前已经装入背包的重量
 function getMaxValue(w, v, index, alreadyW, bag) {
+    // 重量超了
     if (alreadyW > bag) {
         return -1;
     }

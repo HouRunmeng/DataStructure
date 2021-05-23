@@ -9,19 +9,26 @@
 </head>
 
 <body>
-    <script>
-        function hd() {
-            let n = 1;
-            return function sum() {
-                console.log(++n);
-            }
-            sum()
+    <div>
+
+        <input type="button" id="button1" value="1" onclick="moveBtn(this);">
+
+        <input type="button" id="button2" value="2" />
+
+    </div>
+
+    <script type="text/javascript">
+        function moveBtn(obj) {
+
+            var clone = obj.cloneNode(true);
+
+            var parent = obj.parentNode;
+
+            parent.appendChild(clone);
+
+            parent.removeChild(obj);
+
         }
-        let a = hd();
-        a();
-        a();
-        a();
-        a();
     </script>
 </body>
 

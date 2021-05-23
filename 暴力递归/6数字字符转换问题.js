@@ -24,7 +24,9 @@ function getRes(str, i) {
         // 自己作为单独的部分，后续有多少种方法
         let ways = getRes(str, i + 1);
         // 在后续不越界的情况下，当前数字和后续作为一个整体
-        // 注：1必然可以和后续的数字组合，最小20，最大29
+        // 注：1必然可以和后续的数字组合，最小20，最大26
+        // '0'.charCodeAt(0) === 48
+        // '9'.charCodeAt(0) === 54
         if (i + 1 < str.length && (str.charCodeAt(i + 1) >= 48) && (str.charCodeAt(i + 1) <= 54)) {
             ways += getRes(str, i + 2);
         }
@@ -34,3 +36,5 @@ function getRes(str, i) {
     return getRes(str, i + 1)
 }
 console.log(getRes('21', 0));
+
+console.log('9'.charCodeAt(0));

@@ -45,8 +45,6 @@ class Median {
         this.modifyTwoHeap();
     }
     getMedian() {
-        console.log(this.maxHeap);
-        console.log(this.minHeap);
         let maxSize = this.maxHeap.length;
         let minSize = this.minHeap.length;
         if (maxSize + minSize == 0) {

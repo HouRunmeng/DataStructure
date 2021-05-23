@@ -18,7 +18,7 @@
 // 此方法在实现时，使用哈希表代替了链表结构，写着也可以自己定义链表结构而不是用哈希表
 class Node {
     constructor(value) {
-        this.val = value;
+        this.value = value;
     }
 }
 
@@ -58,6 +58,7 @@ class UnionFindSet {
             // 记录往上的沿途的点
             let stack = [];
             while (node !== this.parMap.get(node)) {
+                stack.push(node)
                 node = this.parMap.get(node);
             }
             while (stack.length !== 0) {
@@ -77,7 +78,8 @@ class UnionFindSet {
     }
     union(value1, value2) {
         // 两个结点均注册过并且不是同一个集合
-        if ((this.eleMap.has(value1) && this.eleMap.has(value2)) && this.isSameSet(value1, value2)) {
+        if ((this.eleMap.has(value1) && this.eleMap.has(value2)) && !this.isSameSet(value1, value2)) {
+            console.log('asa');
             let par1 = this.parMap.get(this.eleMap.get(value1));
             let par2 = this.parMap.get(this.eleMap.get(value2));
             // 头节点不一致，即头节点不位于一个集合，进行合并
@@ -98,3 +100,11 @@ class UnionFindSet {
 
 // 若N个结点（样本数量）
 // 若isSameSet和union调用的次数越多，时间复杂度越低（趋近O(1)）
+
+let a = new Node(1);
+let b = new Node(2)
+let arr = [a, b];
+let test = new UnionFindSet(arr);
+test.union(a.value, b.value);
+
+console.log(test);
